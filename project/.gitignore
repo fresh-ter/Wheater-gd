@@ -3,3 +3,6 @@
 
 # Addons
 addons/
+
+# Database files
+*.sqlite
