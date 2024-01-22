@@ -12,13 +12,14 @@ func _ready():
 	
 	server.register_router("/", fileRouter)
 	server.register_router("/senders", fileRouter)
+	server.register_router("/add_sender", fileRouter)
 	server.register_router("/script", fileRouter)
 	server.register_router("/style", fileRouter)
 	
+	server.register_router("/api", APIRouter.new())
+	
 	add_child(server)
 	server.start()
-	
-	print(FileAccess.file_exists("res://www/senders.html"))
 
 
 func _process(delta):
