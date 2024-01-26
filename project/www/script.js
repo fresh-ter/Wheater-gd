@@ -3,8 +3,50 @@ function init(){
     console.log(fileName);
 
     if (fileName == 'index' || fileName == '') {
-        alert("Hello!");
+        function show() {
+            fetch("/api", {
+                method: "POST",
+                body: JSON.stringify({
+                    command: "getData"
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            }).then((response) => response.json())
+            .then((json) => {
+                console.log(json);
 
+                const myNode = document.getElementById("table");
+                myNode.innerHTML = `<thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Datetime</th>
+                        <th scope="col">Sender ID</th>
+                        <th scope="col">Type ID</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>`;
+
+                myNode.innerHTML += `<tbody>`;
+
+                for(sender of json) {
+                    console.log(sender)
+                    myNode.innerHTML += `<tr>
+                        <th scope="row">${sender.id}</th>
+                        <td>${sender.t}</td>
+                        <td>${sender.sender_id}</td>
+                        <td>${sender.type_id}</td>
+                        <td>${sender.value}</td>
+                    </tr>`;
+                }
+                
+
+                myNode.innerHTML += `</tbody>`;
+
+            });
+        }
+
+        show();
     } else if(fileName == 'senders') {
         function show() {
             fetch("/api", {
@@ -71,11 +113,11 @@ function init(){
             });
         }
 
-        var delayInMilliseconds = 4000; //1 second
+        // var delayInMilliseconds = 4000; //1 second
 
-        setTimeout(function() {
-            //your code to be executed after 1 second
-        }, delayInMilliseconds);
+        // setTimeout(function() {
+        //     //your code to be executed after 1 second
+        // }, delayInMilliseconds);
 
         show();
 
@@ -84,7 +126,26 @@ function init(){
             const taskID = task_node.id.substring(1);
             console.log(taskID);
 
-            show();
+            result = prompt("Change name for sender #" + taskID + ". Enter new name:");
+
+            console.log(result);
+
+            fetch("/api", {
+                method: "POST",
+                body: JSON.stringify({
+                    command: "changeNameSender",
+                    id: taskID,
+                    newName: result
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            }).then((response) => response.json())
+            .then((json) => {
+                console.log(json);
+                if(json.message == 'OK')
+                    show();
+            });
         }
 
         function r_event(event) {
